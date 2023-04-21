@@ -1,51 +1,40 @@
 package com.nagra;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import org.alcibiade.asciiart.coord.TextBoxSize;
+import org.alcibiade.asciiart.image.rasterize.ShapeRasterizer;
+import org.alcibiade.asciiart.raster.ExtensibleCharacterRaster;
+import org.alcibiade.asciiart.raster.Raster;
+import org.alcibiade.asciiart.raster.RasterContext;
+import org.alcibiade.asciiart.widget.PictureWidget;
+import org.alcibiade.asciiart.widget.TextWidget;
+import javax.imageio.ImageIO;
+public class MyApp{
+    public static void main(String[] args) throws IOException{
 
-/*public class MyApp {
-    public static <TextWidget> void main(String[] args)  {
-        System.out.println("Hello world! Nayanashree.A");
-    }
-
-}*/
-public class MyApp {
-    public static void main(String[] args) {
+        System.out.println("Hello world! This is Nayanashree!!");
+        BufferedImage flowerImage = null;
+        ClassLoader classLoader = MyApp.class.getClassLoader();
+        InputStream resourceAsStream = classLoader.getResourceAsStream("India.png");
         try {
-            // Load the image file
-            File imageFile = new File("C:/Users/NayanaShree.A/my_first_app/my_first_app/src/main/resources/Images/IndiaApp.png");
-            BufferedImage image = ImageIO.read(imageFile);
+            BufferedImage image = ImageIO.read(resourceAsStream);
 
-            // Resize the image to a smaller size for better ASCII representation
-            int newWidth = image.getWidth() / 8;
-            int newHeight = image.getHeight() / 8;
-            BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
-            resizedImage.createGraphics().drawImage(image, 0, 0, newWidth, newHeight, null);
 
-            // Convert the resized image to ASCII characters
-            StringBuilder sb = new StringBuilder();
-            String characters = "@#S%?*+;:,.";// ASCII characters from darkest to lightest
-            for (int y = 0; y < newHeight; y++) {
-                for (int x = 0; x < newWidth; x++) {
-                    int rgb = resizedImage.getRGB(x, y);
-                    int gray = (int) (0.2126 * ((rgb >> 16) & 0xff) + 0.7152 * ((rgb >> 8) & 0xff) + 0.0722 * (rgb & 0xff));
-                    int index = (int) (gray / (255.0 / (characters.length() - 1)));
-                    sb.append(characters.charAt(index));
-                }
-                sb.append("\n");
-            }
+            TextWidget widget = new PictureWidget(new TextBoxSize(80, 30),
+                    image, new ShapeRasterizer());
+            Raster raster = new ExtensibleCharacterRaster();
 
-            // Print the ASCII art
-            System.out.println(sb.toString());
-
-        } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            widget.render(new RasterContext(raster));
+            System.out.println(raster.toString());
+        } catch (IOException e){
+            e.printStackTrace();
         }
+
+
     }
 }
-
 
 
 
